@@ -1,0 +1,6 @@
+/target
+.env
+note.md
+.vscode
+_*
+*.bk
