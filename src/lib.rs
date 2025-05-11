@@ -4,3 +4,4 @@ pub mod dao;
 pub mod model;
 pub mod services;
 pub mod utils;
+pub mod config;

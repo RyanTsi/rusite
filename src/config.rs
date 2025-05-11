@@ -1,0 +1,1 @@
+pub const POST_PATH: &str = "/home/solaryan/rusite/assets/posts/";
