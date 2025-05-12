@@ -1,9 +1,10 @@
+use actix_files::Files;
 use actix_web::{web, App, HttpResponse, HttpServer};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use crate::dao::database;
 use crate::handler::ping::ping;
-use crate::handler::{user, post};
+use crate::handler::{user, article};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -15,11 +16,16 @@ use crate::handler::{user, post};
     paths(
         crate::handler::ping::ping,
         crate::handler::user::create,
-        crate::handler::post::create,
+        crate::handler::article::create,
+        crate::handler::article::modify,
+        crate::handler::article::delete,
+        crate::handler::article::list,
+        crate::handler::article::content_path,
     ),
     components(schemas(
-        crate::model::request::UserCreateRequest,
-        crate::model::request::PostCreateRequest,
+        crate::models::requests::UserCreateRequest,
+        crate::models::requests::ArticleCreateRequest,
+        crate::models::requests::ArticleModifyRequest,
     )),
 )]
 struct ApiDoc;
@@ -35,14 +41,19 @@ fn config_app(cfg: &mut web::ServiceConfig) {
                     .service(web::resource("/create").route(web::post().to(user::create))),
                 )
                 .service(
-                    web::scope("/post")
-                    .service(web::resource("/create").route(web::post().to(post::create)))
+                    web::scope("/article")
+                    .service(web::resource("/create").route(web::post().to(article::create)))
+                    .service(web::resource("/modify").route(web::put().to(article::modify)))
+                    .service(web::resource("/{aid}/delete").route(web::delete().to(article::delete)))
+                    .service(web::resource("/list").route(web::get().to(article::list)))
+                    .service(web::resource("/{aid}/content/path").route(web::get().to(article::content_path)))
                 )
         )
         .service(
             SwaggerUi::new("/swagger-ui/{_:.*}")
                 .url("/api-docs/openapi.json", ApiDoc::openapi()),
         )
+        .service(Files::new("/static", "./static").prefer_utf8(true))
         .default_service(web::route().to(HttpResponse::NotFound));
 }
 pub async fn run_server() ->std::io::Result<()> {

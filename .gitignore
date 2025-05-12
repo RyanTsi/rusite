@@ -1,7 +1,8 @@
-/target
+target
 .env
-note.md
 .vscode
 _*
 *.bk
 assets
+static
+note.md

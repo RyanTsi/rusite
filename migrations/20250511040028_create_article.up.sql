@@ -1,6 +1,6 @@
 -- Add up migration script here
-CREATE TABLE IF NOT EXISTS posts (
-    pid CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+CREATE TABLE IF NOT EXISTS articles (
+    aid CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     title VARCHAR(255) NOT NULL,
     summary TEXT,
     content VARCHAR(255) NOT NULL,
@@ -15,12 +15,12 @@ CREATE TABLE IF NOT EXISTS tags (
     name VARCHAR(255) UNIQUE NOT NULL
 );
 
--- Create the 'post_tags' relation table
-CREATE TABLE IF NOT EXISTS post_tags (
-    pid CHAR(36),
+-- Create the 'article_tags' relation table
+CREATE TABLE IF NOT EXISTS article_tags (
+    aid CHAR(36),
     tid INT,
-    PRIMARY KEY (pid, tid),
-    FOREIGN KEY (pid) REFERENCES posts(pid) ON DELETE CASCADE,
+    PRIMARY KEY (aid, tid),
+    FOREIGN KEY (aid) REFERENCES articles(aid) ON DELETE CASCADE,
     FOREIGN KEY (tid) REFERENCES tags(tid) ON DELETE CASCADE
 );
 
@@ -30,9 +30,9 @@ CREATE TABLE IF NOT EXISTS categories (
     name VARCHAR(255) UNIQUE NOT NULL
 );
 
--- Create the 'post_categories' relation table
-CREATE TABLE IF NOT EXISTS post_categories (
-    pid CHAR(36) REFERENCES posts(pid) ON DELETE CASCADE,
+-- Create the 'article_categories' relation table
+CREATE TABLE IF NOT EXISTS article_categories (
+    aid CHAR(36) REFERENCES articles(aid) ON DELETE CASCADE,
     cid INT REFERENCES categories(cid) ON DELETE CASCADE,
-    PRIMARY KEY (pid, cid)
+    PRIMARY KEY (aid, cid)
 );

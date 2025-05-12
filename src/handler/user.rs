@@ -1,6 +1,6 @@
 use actix_web::{web, HttpResponse, Responder};
 use serde_json::json;
-use crate::model::request::UserCreateRequest;
+use crate::models::requests::UserCreateRequest;
 use crate::dao::database::Database;
 use crate::services::user::create_service;
 

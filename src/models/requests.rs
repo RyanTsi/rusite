@@ -9,7 +9,7 @@ pub struct UserCreateRequest {
 }
 
 #[derive(Deserialize, ToSchema)]
-pub struct PostCreateRequest {
+pub struct ArticleCreateRequest {
     pub title: String,
     pub tags: Vec<String>,
     pub categories: Vec<String>,
@@ -19,8 +19,8 @@ pub struct PostCreateRequest {
 }
 
 #[derive(Deserialize, ToSchema)]
-pub struct PostModifyRequest {
-    pub pid: String,
+pub struct ArticleModifyRequest {
+    pub aid: String,
     pub title: Option<String>,
     pub tags: Option<Vec<String>>,
     pub categories: Option<Vec<String>>,

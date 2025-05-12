@@ -2,7 +2,7 @@ use std::error::Error;
 
 use actix_web::web;
 
-use crate::model::request::UserCreateRequest;
+use crate::models::requests::UserCreateRequest;
 use crate::dao::database::Database;
 
 pub async fn create_service(
