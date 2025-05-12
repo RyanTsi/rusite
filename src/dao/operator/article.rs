@@ -143,15 +143,15 @@ impl database::Database {
             GROUP_CONCAT(DISTINCT t.name ORDER BY t.name SEPARATOR ', ') AS tags,
             GROUP_CONCAT(DISTINCT c.name ORDER BY c.name SEPARATOR ', ') AS categories
         FROM 
-            rusite.articles a
+            articles a
         LEFT JOIN 
-            rusite.article_tags at ON a.aid = at.aid
+            article_tags at ON a.aid = at.aid
         LEFT JOIN 
-            rusite.tags t ON at.tid = t.tid
+            tags t ON at.tid = t.tid
         LEFT JOIN 
-            rusite.article_categories ac ON a.aid = ac.aid
+            article_categories ac ON a.aid = ac.aid
         LEFT JOIN 
-            rusite.categories c ON ac.cid = c.cid
+            categories c ON ac.cid = c.cid
         GROUP BY 
             a.aid, a.title, a.summary, a.content, a.secret, a.created_at, a.updated_at
         ORDER BY 
