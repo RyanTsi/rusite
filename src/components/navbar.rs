@@ -6,10 +6,12 @@ use crate::routes::Route;
 /// Shared navbar component.
 #[component]
 pub fn Navbar(active_search: Signal<bool>) -> Element {
+    
+    let input_content = use_signal(|| String::new());
     rsx! {
-        div {
+        header {
             id: "navbar",
-            class: "sticky top-0 flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm shadow-sm",
+            class: "sticky top-0 flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm shadow-sm z-30",
             // Left side
             div {
                 class: "flex items-center space-x-12",
@@ -30,7 +32,12 @@ pub fn Navbar(active_search: Signal<bool>) -> Element {
                 UserInfo {},
             }
         }
-
+        if active_search() {
+            Search {
+                active_search: active_search,
+                input_content: input_content,
+            }
+        }
         Outlet::<Route> {}
     }
 }
@@ -44,7 +51,7 @@ fn Searchbutton( active_search: Signal<bool> ) -> Element {
             onclick: move |_| {
                 active_search.set(true);
             },
-            search_icon { size: 4 }
+            search_icon{ size: 6 },
             kbd {
                 class: "font-sans text-gray-500 dark:text-gray-400 pr-3",
                 "Search Ctrl+K"
@@ -65,7 +72,7 @@ fn Routerlinks() -> Element {
                 "Home"
             }
             Link {
-                to: Route::Blog { id: 1 },
+                to: Route::Blog {},
                 class: "text-gray-700 hover:text-blue-500",
                 "Blog"
             }
@@ -88,6 +95,7 @@ fn UserInfo() -> Element {
                 src: "https://avatars.githubusercontent.com/u/97720243?s=400&u=5de211300fe16f6549f2c065770cdfceb7fe69be&v=4",
                 alt: "User Icon",
             },
+            // user_icon { size: 6 }
             // Dropdown menu (hidden by default, shown on hover)
             div {
                 class: "absolute right-0 mt-2 w-40 bg-blue-100 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10",
@@ -100,6 +108,45 @@ fn UserInfo() -> Element {
                     li {
                         class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100",
                         "Logout"
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[component]
+fn Search(active_search: Signal<bool>, input_content: Signal<String>) -> Element{
+    rsx! {
+        div {
+            id: "search panel",
+            class: "fixed inset-0 items-center justify-center z-50",
+            div {
+                id:"overlay",
+                class: "fixed inset-0 bg-black/50 min-h-screen backdrop-blur-md",
+                onclick: move |_| active_search.set(false),
+            }
+            div { 
+                id: "panel",
+                class: "fixed inset-x-0 mx-auto z-100 top-1/6 max-w-2xl items-center justify-center bg-white min-h-1/2",
+                div {
+                    input {
+                        class: "w-full rounded-full bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+                        placeholder: "Type here to search...",
+                        r#type: "text",
+                        autocomplete: "off",
+                        value: "{input_content}",
+                        onmounted: move |cx: Event<MountedData>| {
+                            let _ = cx.data().set_focus(true);
+                        },
+                        onkeydown: move |evt| {
+                            if evt.key() == Key::Escape {
+                                active_search.set(false);
+                            }
+                        },
+                        oninput: move |evt| {
+                            input_content.set(evt.value().clone());
+                        },
                     }
                 }
             }

@@ -2,7 +2,7 @@ use dioxus::prelude::*;
 use crate::components::navbar::Navbar;
 use crate::components::home::Home;
 use crate::components::blog::Blog;
-use crate::components::blog::Article;
+use crate::components::article::Article;
 use crate::components::about::About;
 
 #[component]
@@ -23,7 +23,7 @@ pub enum Route {
     #[route("/")]
     Home {},
     #[route("/blog")]
-    Blog { id: i32 },
+    Blog {},
     #[route("/blog/article/:aid")]
     Article { aid: String },
     #[route("/about")]

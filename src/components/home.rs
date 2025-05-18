@@ -16,7 +16,7 @@ fn Hero() -> Element {
 pub fn Home() -> Element {
     rsx! {
         div {
-            class: "flex flex-col justify-center items-center min-h-3/4",
+            class: "flex flex-col justify-center items-center h-[70vh]",
             div { 
                 id: "title",
                 class: "text-6xl font-bold",
