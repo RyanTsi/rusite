@@ -3,10 +3,10 @@ use crate::assets::{search_icon, *};
 use crate::routes::Route;
 
 
-/// Shared navbar component.
+/// navbar component.
 #[component]
-pub fn Navbar(active_search: Signal<bool>) -> Element {
-    
+pub fn Navbar() -> Element {
+    let active_search = use_signal(|| false);
     let input_content = use_signal(|| String::new());
     rsx! {
         header {
@@ -26,14 +26,12 @@ pub fn Navbar(active_search: Signal<bool>) -> Element {
             // Right side
             div {
                 class: "flex items-center space-x-12",
-                // Search box
                 Searchbutton { active_search: active_search },
-                // User icon with dropdown
                 UserInfo {},
             }
         }
         if active_search() {
-            Search {
+            Search_box {
                 active_search: active_search,
                 input_content: input_content,
             }
@@ -43,7 +41,7 @@ pub fn Navbar(active_search: Signal<bool>) -> Element {
 }
 
 #[component]
-fn Searchbutton( active_search: Signal<bool> ) -> Element {
+fn Searchbutton(active_search: Signal<bool> ) -> Element {
     rsx! {
         button {
             class: "inline-flex items-center min-w-48 gap-3 rounded-full bg-gray-950/2 px-2 py-1 inset-ring inset-ring-gray-950/8 dark:bg-white/5 dark:inset-ring-white/2",
@@ -116,7 +114,7 @@ fn UserInfo() -> Element {
 }
 
 #[component]
-fn Search(active_search: Signal<bool>, input_content: Signal<String>) -> Element{
+fn Search_box(active_search: Signal<bool>, input_content: Signal<String>) -> Element{
     rsx! {
         div {
             id: "search panel",

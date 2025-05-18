@@ -1,40 +1,43 @@
 use std::{cmp::{max, min}, collections::HashSet};
 
+use async_std::task::sleep;
 use dioxus::{document::eval, prelude::*};
-use crate::components::article::ArticleInfo;
+use reqwest::get;
+use crate::components::article::{ApiResponse, ArticleInfo, ArticleList};
+
+// static SERVER = Server{
+//     config: Config {
+//         api_url: "https://api.github.com".to_string(),
+//         api_key: "".to_string(),
+//     },
+// }
 
 /// Blog page
 #[component]
 pub fn Blog() -> Element {
-    let mut article_info = Vec::new();
+    let mut articlelist = use_signal(|| Vec::new());
+    let mut max_page= use_signal(|| 1);
+    let mut loading = use_signal(|| true);
+    use_future(move || async move {
+        articlelist.set(get("http://localhost:8000/api/v1/article/list")
+        .await.unwrap().json::<ApiResponse::<Vec<ArticleInfo>>>().await.unwrap().data);
+        sleep(std::time::Duration::from_secs(5)).await;
+        loading.set(false);
+    });
     let mut cur_page = use_signal(|| 1);
     let mut cur_articles = use_signal(|| Vec::new());
     let selected_tags: Signal<HashSet<String>> = use_signal(|| {HashSet::new()});
     let selected_categories: Signal<HashSet<String>> = use_signal(|| HashSet::new());
     let mut tags = Vec::new();
     let mut categories = Vec::new();
-    let mut max_page= use_signal(|| 1);
-    for i in 1..=20 {
-        article_info.push(
-            ArticleInfo {
-                aid: i.to_string(),
-                title: "Dioxus Router".to_string() + &i.to_string(),
-                summary: "Dioxus Router is a powerful router for Dioxus applications.".to_string(),
-                tags: vec!["dioxus".to_string(), "router".to_string()],
-                categories: vec!["tutorial".to_string()],
-                secret: None,
-                created_at: "2025-5-17".to_string(),
-                updated_at: "2025-5-17".to_string(),
-            }
-        );
-    }
+
     for i in 1..=10 { 
         tags.push("value".to_string() + &i.to_string());
         categories.push("tutorial".to_string() + &i.to_string());
     }
     
     use_effect(move || {
-        let filtered: Vec<ArticleInfo> = article_info.iter()
+        let filtered: Vec<ArticleInfo> = articlelist().iter()
         .filter(|info| {
             selected_tags().is_empty() || info.tags.iter().any(|tag| selected_tags().contains(tag))
         })
@@ -43,7 +46,7 @@ pub fn Blog() -> Element {
         })
         .cloned()
         .collect();
-        max_page.set(max(1, filtered.len() / 10 + filtered.len() % 10));
+        max_page.set(max(1, (filtered.len() + 9) / 10));
         if  cur_page() > max_page() { cur_page.set(1); }
         let start = 10 * (cur_page() - 1);
         let end = min(start + 10, filtered.len());
@@ -52,55 +55,62 @@ pub fn Blog() -> Element {
 
     
     rsx! {
-        div {
-            id: "blog",
-            class: "flex flex-row",
+        if loading() {
             div {
-                class: "flex flex-col gap-8 items-end mt-8 w-3/4",
-                for info in cur_articles() {
-                    ArticleInfo { 
-                        aid: info.aid,
-                        title: info.title,
-                        summary: info.summary,
-                        tags: info.tags,
-                        categories: info.categories,
-                        secret: info.secret,
-                        created_at: info.created_at,
-                        updated_at: info.updated_at,
+                class: "flex justify-center items-center h-screen",
+                "Loading..."
+            }
+        } else{
+            div {
+                id: "blog",
+                class: "flex flex-row",
+                div {
+                    class: "flex flex-col gap-8 items-end mt-8 w-3/4",
+                    for info in cur_articles() {
+                        ArticleList { 
+                            aid: info.aid,
+                            title: info.title,
+                            summary: info.summary,
+                            tags: info.tags,
+                            categories: info.categories,
+                            secret: info.secret,
+                            // created_at: info.created_at,
+                            updated_at: info.updated_at,
+                        }
+                    }
+                }
+                div {
+                    class: "w-1/4 sticky top-24 h-fit self-start",
+                    Sidebar {
+                        tags: tags,
+                        categories: categories,
+                        selected_tags:  selected_tags,
+                        selected_categories: selected_categories,
                     }
                 }
             }
             div {
-                class: "w-1/4 sticky top-24 h-fit self-start",
-                Sidebar {
-                    tags: tags,
-                    categories: categories,
-                    selected_tags:  selected_tags,
-                    selected_categories: selected_categories,
-                }
-            }
-        }
-        div {
-            class: "flex justify-center mt-12 mb-8 w-full",
-            for i in 1..=max_page() {
-                if i == cur_page() {
-                    button {
-                        class: "mx-1 px-4 py-2 bg-blue-600 text-white rounded-md",
-                        "{i}"
-                    }
-                } else {
-                    button {
-                        class: "mx-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md",
-                        onclick: move |_| {
-                            cur_page.set(i);
-                            eval(r#"
-                                window.scrollTo({
-                                    top: 0,
-                                    behavior: 'smooth'
-                                });
-                            "#);
-                        },
-                        "{i}"
+                class: "flex justify-center mt-12 mb-8 w-full",
+                for i in 1..=max_page() {
+                    if i == cur_page() {
+                        button {
+                            class: "mx-1 px-4 py-2 bg-blue-600 text-white rounded-md",
+                            "{i}"
+                        }
+                    } else {
+                        button {
+                            class: "mx-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md",
+                            onclick: move |_| {
+                                cur_page.set(i);
+                                eval(r#"
+                                    window.scrollTo({
+                                        top: 0,
+                                        behavior: 'smooth'
+                                    });
+                                "#);
+                            },
+                            "{i}"
+                        }
                     }
                 }
             }

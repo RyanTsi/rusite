@@ -1,19 +1,22 @@
+use std::env;
+
 use dioxus::hooks::{use_future, UseFuture};
 use reqwest::get;
 
-struct Config {
+pub struct Config {
     pub api_url: String,
     pub api_key: String,
 }
 
-struct Sever {
+
+pub struct Server {
     pub config: Config,
 }
 
 
-impl Sever {
-    fn new(config: Config) -> Self {
-        Sever { config }
+impl Server {
+    pub fn new(config: Config) -> Self {
+        Server { config }
     }
     pub fn fetch_articles_info(&'static self) -> UseFuture {
         let a = use_future(|| async {

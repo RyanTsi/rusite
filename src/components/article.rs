@@ -1,8 +1,16 @@
 use dioxus::prelude::*;
+use serde::Deserialize;
 
 use crate::{assets::{folders_icon, left_icon, right_icon, tags_icon}, routes::Route};
 
-#[derive(Props, PartialEq, Clone)]
+#[derive(Deserialize)]
+pub struct ApiResponse<T> {
+    code: u32,
+    message: String,
+    pub data: T,
+}
+
+#[derive(Props, PartialEq, Clone, Deserialize)]
 pub struct ArticleInfo {
     pub aid: String,
     pub title: String,
@@ -10,12 +18,11 @@ pub struct ArticleInfo {
     pub tags: Vec<String>,
     pub categories: Vec<String>,
     pub secret: Option<String>,
-    pub created_at: String,
     pub updated_at: String,
 }
 
 #[component]
-pub fn ArticleInfo(props: ArticleInfo) -> Element {
+pub fn ArticleList(props: ArticleInfo) -> Element {
     rsx! {
         div {
             class: "p-8 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 w-2/3",
@@ -100,7 +107,7 @@ fn get_article_by_id(aid: &str) -> ArticleInfo {
         categories: vec!["Rust".to_string(), "Web 开发".to_string()],
         tags: vec!["Dioxus".to_string(), "前端".to_string()],
         secret: None,
-        created_at: "2025-01-01".to_string(),
+        // created_at: "2025-01-01".to_string(),
         updated_at: "2025-01-05".to_string(),
     }
 }
@@ -132,7 +139,7 @@ pub fn Article(aid: String) -> Element {
             // 时间信息
             div {
                 class: "flex gap-4 text-gray-500 text-sm mb-6",
-                span { "发布于：{article.created_at}" }
+                // span { "发布于：{article.created_at}" }
                 span { "更新于：{article.updated_at}" }
             }
 
