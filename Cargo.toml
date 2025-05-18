@@ -23,6 +23,7 @@ utoipa-swagger-ui = {version = "9.0.1", features = [ "actix-web" ]}
 uuid = { version = "1.16.0", features = [ "v4", "serde" ] }
 sqlx = { version = "0.8", features = [ "runtime-tokio", "mysql", "uuid", "chrono" ] }
 openssl = "0.10.72"
+actix-cors = "0.7.1"
 
 [dev-dependencies]
 httpc-test = "0.1.10"

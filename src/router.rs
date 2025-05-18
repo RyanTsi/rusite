@@ -1,10 +1,12 @@
 use actix_files::Files;
+use actix_web::http::header;
 use actix_web::{web, App, HttpResponse, HttpServer};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use crate::dao::database;
 use crate::handler::ping::ping;
 use crate::handler::{user, article};
+use actix_cors::Cors;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -61,6 +63,15 @@ pub async fn run_server() ->std::io::Result<()> {
     let share_data = web::Data::new(database);
     HttpServer::new(move || {
         App::new()
+            .wrap(
+                Cors::default()
+                    .allowed_origin("http://localhost:8080")
+                    .allowed_methods(vec!["GET", "POST"])
+                    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+                    .allowed_header(header::CONTENT_TYPE)
+                    .supports_credentials()
+                    .max_age(3600),
+            )
             .app_data(share_data.clone())
             .configure(config_app)
     })
