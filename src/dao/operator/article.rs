@@ -165,6 +165,7 @@ impl database::Database {
                 categories: str_split_to_vec(&raw.get::<String, _>("categories"), ","),
                 summary: raw.get("summary"),
                 secret: raw.get("secret"),
+                created_at: raw.get("creaded_at"),
                 updated_at: raw.get("updated_at"),
             }
         })

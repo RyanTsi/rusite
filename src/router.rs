@@ -6,6 +6,7 @@ use utoipa_swagger_ui::SwaggerUi;
 use crate::dao::database;
 use crate::handler::ping::ping;
 use crate::handler::{user, article};
+use crate::middleware::cors::CORS;
 use actix_cors::Cors;
 
 #[derive(OpenApi)]
@@ -64,13 +65,7 @@ pub async fn run_server() ->std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .wrap(
-                Cors::default()
-                    .allowed_origin("http://localhost:8080")
-                    .allowed_methods(vec!["GET", "POST"])
-                    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
-                    .allowed_header(header::CONTENT_TYPE)
-                    .supports_credentials()
-                    .max_age(3600),
+                CORS()
             )
             .app_data(share_data.clone())
             .configure(config_app)

@@ -9,5 +9,6 @@ pub struct ArticleInfo {
     pub summary: String,
     pub secret: Option<String>,
     pub updated_at: DateTime<Utc>,
+    pub created_at: DateTime<Utc>,
     pub aid: String,
 }
