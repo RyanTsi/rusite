@@ -92,7 +92,8 @@ impl database::Database {
         .execute(&self.pool)
         .await?;
         if let Some(content) = content {
-            write_file(&self.get_content_path(aid).await?, content).await?;
+            let save_path = ARTICLIE_SAVE_PATH.to_string() + &self.get_content_path(aid).await?;
+            write_file(&save_path, content).await?;
         }
         Ok(())
     }
