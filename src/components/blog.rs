@@ -21,7 +21,6 @@ pub fn Blog() -> Element {
     use_future(move || async move {
         articlelist.set(get("http://localhost:8000/api/v1/article/list")
         .await.unwrap().json::<ApiResponse::<Vec<ArticleInfo>>>().await.unwrap().data);
-        sleep(std::time::Duration::from_secs(5)).await;
         loading.set(false);
     });
     let mut cur_page = use_signal(|| 1);
@@ -74,7 +73,7 @@ pub fn Blog() -> Element {
                             tags: info.tags,
                             categories: info.categories,
                             secret: info.secret,
-                            // created_at: info.created_at,
+                            created_at: info.created_at,
                             updated_at: info.updated_at,
                         }
                     }

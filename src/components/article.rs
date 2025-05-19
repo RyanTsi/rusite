@@ -18,6 +18,7 @@ pub struct ArticleInfo {
     pub tags: Vec<String>,
     pub categories: Vec<String>,
     pub secret: Option<String>,
+    pub created_at: String,
     pub updated_at: String,
 }
 
@@ -107,7 +108,7 @@ fn get_article_by_id(aid: &str) -> ArticleInfo {
         categories: vec!["Rust".to_string(), "Web 开发".to_string()],
         tags: vec!["Dioxus".to_string(), "前端".to_string()],
         secret: None,
-        // created_at: "2025-01-01".to_string(),
+        created_at: "2025-01-01".to_string(),
         updated_at: "2025-01-05".to_string(),
     }
 }
@@ -139,7 +140,7 @@ pub fn Article(aid: String) -> Element {
             // 时间信息
             div {
                 class: "flex gap-4 text-gray-500 text-sm mb-6",
-                // span { "发布于：{article.created_at}" }
+                span { "发布于：{article.created_at}" }
                 span { "更新于：{article.updated_at}" }
             }
 
