@@ -1,7 +1,8 @@
 use dioxus::prelude::*;
+use lucide_dioxus::Tags;
 use serde::Deserialize;
 
-use crate::{assets::{folders_icon, left_icon, right_icon, tags_icon}, routes::Route};
+use crate::{assets::{folders_icon, left_icon, right_icon}, routes::Route};
 
 #[derive(Deserialize)]
 pub struct ApiResponse<T> {
@@ -62,7 +63,7 @@ pub fn ArticleList(props: ArticleInfo) -> Element {
                             }
                         }
                     }
-                    tags_icon { size: 5 }
+                    Tags { size: 24 }
                     div {
                         class: "flex flex-wrap gap-2",
                         for tag in props.tags.iter() {
@@ -162,7 +163,7 @@ pub fn Article(aid: String) -> Element {
                 if !article.tags.is_empty() {
                     div {
                         class: "flex flex-wrap gap-2 items-center",
-                        tags_icon { size: 5 }
+                        Tags { size: 24 }
                         for tag in article.tags.iter() {
                             span {
                                 class: "px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm",

@@ -1,5 +1,7 @@
 use dioxus::prelude::*;
-use crate::assets::{search_icon, *};
+use lucide_dioxus::{CircleUserRound, Search, User};
+use crate::assets::*;
+use crate::components::Overlay;
 use crate::routes::Route;
 
 
@@ -49,7 +51,7 @@ fn Searchbutton(active_search: Signal<bool> ) -> Element {
             onclick: move |_| {
                 active_search.set(true);
             },
-            search_icon{ size: 6 },
+            Search { size: 18 }
             kbd {
                 class: "font-sans text-gray-500 dark:text-gray-400 pr-3",
                 "Search Ctrl+K"
@@ -88,13 +90,12 @@ fn UserInfo() -> Element {
     rsx! {
         div {
             class: "relative group",
-            img {
-                class: "h-8 w-8 cursor-pointer rounded-full",
-                src: "https://avatars.githubusercontent.com/u/97720243?s=400&u=5de211300fe16f6549f2c065770cdfceb7fe69be&v=4",
-                alt: "User Icon",
-            },
-            // user_icon { size: 6 }
-            // Dropdown menu (hidden by default, shown on hover)
+            // img {
+            //     class: "h-8 w-8 cursor-pointer rounded-full",
+            //     src: "https://avatars.githubusercontent.com/u/97720243?s=400&u=5de211300fe16f6549f2c065770cdfceb7fe69be&v=4",
+            //     alt: "User Icon",
+            // },
+            CircleUserRound { }
             div {
                 class: "absolute right-0 mt-2 w-40 bg-blue-100 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10",
                 ul {
@@ -119,11 +120,7 @@ fn Search_box(active_search: Signal<bool>, input_content: Signal<String>) -> Ele
         div {
             id: "search panel",
             class: "fixed inset-0 items-center justify-center z-50",
-            div {
-                id:"overlay",
-                class: "fixed inset-0 bg-black/50 min-h-screen backdrop-blur-md",
-                onclick: move |_| active_search.set(false),
-            }
+            Overlay { active: active_search }
             div { 
                 id: "panel",
                 class: "fixed inset-x-0 mx-auto z-100 top-1/6 max-w-2xl items-center justify-center bg-white min-h-1/2",

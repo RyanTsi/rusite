@@ -1,9 +1,9 @@
 use dioxus::prelude::*;
-use crate::components::navbar::Navbar;
-use crate::components::home::Home;
-use crate::components::blog::Blog;
-use crate::components::article::Article;
-use crate::components::about::About;
+use crate::views::navbar::Navbar;
+use crate::views::home::Home;
+use crate::views::blog::Blog;
+use crate::views::article::Article;
+use crate::views::about::About;
 
 
 #[derive(Debug, Clone, Routable, PartialEq)]

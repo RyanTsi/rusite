@@ -1,11 +1,10 @@
 use std::{cmp::{max, min}, collections::HashSet};
 
-use async_std::task::sleep;
 use dioxus::{document::eval, prelude::*};
 use reqwest::get;
-use crate::components::article::{ApiResponse, ArticleInfo, ArticleList};
+use super::article::{ApiResponse, ArticleInfo, ArticleList};
 
-// static SERVER = Server{
+// static SERVER = Server{r
 //     config: Config {
 //         api_url: "https://api.github.com".to_string(),
 //         api_key: "".to_string(),
@@ -19,7 +18,7 @@ pub fn Blog() -> Element {
     let mut max_page= use_signal(|| 1);
     let mut loading = use_signal(|| true);
     use_future(move || async move {
-        articlelist.set(get("http://localhost:8000/api/v1/article/list")
+        articlelist.set(get("http://111.231.136.180:8000/api/v1/article/list")
         .await.unwrap().json::<ApiResponse::<Vec<ArticleInfo>>>().await.unwrap().data);
         loading.set(false);
     });

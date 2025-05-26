@@ -4,3 +4,4 @@ pub mod components;
 pub mod fetch;
 pub mod models;
 pub mod utils;
+pub mod views;
