@@ -2,6 +2,8 @@ use std::{cmp::{max, min}, collections::HashSet};
 
 use dioxus::{document::eval, prelude::*};
 use reqwest::get;
+use crate::components::List;
+
 use super::article::{ApiResponse, ArticleInfo, ArticleList};
 
 // static SERVER = Server{r
@@ -64,6 +66,25 @@ pub fn Blog() -> Element {
                 class: "flex flex-row",
                 div {
                     class: "flex flex-col gap-8 items-end mt-8 w-3/4",
+                    div {
+                        List {
+                            content: cur_articles().iter().map(|info| {
+                                rsx! {
+                                    ArticleList { 
+                                        aid: info.aid.clone(),
+                                        title: info.title.clone(),
+                                        summary: info.summary.clone(),
+                                        tags: info.tags.clone(),
+                                        categories: info.categories.clone(),
+                                        secret: info.secret.clone(),
+                                        created_at: info.created_at.clone(),
+                                        updated_at: info.updated_at.clone(),
+                                    }
+                                }
+                            }).collect(),
+                            gap: 12,
+                        }
+                    }
                     for info in cur_articles() {
                         ArticleList { 
                             aid: info.aid,

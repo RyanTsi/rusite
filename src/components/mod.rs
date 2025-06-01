@@ -12,12 +12,20 @@ pub fn Overlay(active: Signal<bool>) -> Element {
     }
 }
 
+#[derive(Clone, PartialEq, Props)]
+pub struct ListProps { 
+    content: Vec<Element>,
+    #[props(default = 16)]
+    gap: usize,
+}
+
 #[component]
-pub fn List(content: Vec<Element>) -> Element { 
+pub fn List(props: ListProps) -> Element {
+    let gap = format!("gap-{}", props.gap);
     rsx! {
         div {
-            class: "flex flex-col gap-4",
-            for item in content {
+            "class": "flex flex-col {gap}",
+            for item in props.content.iter() {
                 { item },
             }
         }
