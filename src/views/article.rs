@@ -2,7 +2,7 @@ use dioxus::prelude::*;
 use lucide_dioxus::Tags;
 use serde::Deserialize;
 
-use crate::{assets::{folders_icon, left_icon, right_icon}, routes::Route};
+use crate::{assets::{folders_icon, left_icon, right_icon}, models::ArticleInfo, routes::Route};
 
 #[derive(Deserialize)]
 pub struct ApiResponse<T> {
@@ -10,94 +10,6 @@ pub struct ApiResponse<T> {
     message: String,
     pub data: T,
 }
-
-#[derive(Props, PartialEq, Clone, Deserialize)]
-pub struct ArticleInfo {
-    pub aid: String,
-    pub title: String,
-    pub summary: String,
-    pub tags: Vec<String>,
-    pub categories: Vec<String>,
-    pub secret: Option<String>,
-    pub created_at: String,
-    pub updated_at: String,
-}
-
-#[component]
-pub fn ArticleList(props: ArticleInfo) -> Element {
-    rsx! {
-        div {
-            class: "p-8 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 w-2/3",
-            div {
-                class: "flex flex-row justify-between",
-                h1 {
-                    id: "title",
-                    class : "text-3xl font-bold",
-                    "{props.title}"
-                }
-                p {
-                    id: "updated time",
-                    class: "text-gray-400 text-sm",
-                    "{props.updated_at}"
-                }
-            }
-            div {
-                id: "summary",
-                class: "my-4",
-                p {
-                    class: "text-gray-600",
-                    "{props.summary}"
-                }
-            }
-            div { 
-                class: "flex flex-row gap-4 justify-between items-center",
-                div {
-                    class: "flex flex-row gap-2 items-center",
-                    folders_icon { size: 5 }
-                    div {
-                        class: "flex flex-wrap gap-2",
-                        for category in props.categories.iter() {
-                            span {
-                                class: "px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm",
-                                "{category}"
-                            }
-                        }
-                    }
-                    Tags { size: 24 }
-                    div {
-                        class: "flex flex-wrap gap-2",
-                        for tag in props.tags.iter() {
-                            span {
-                                class: "px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm",
-                                "{tag}"
-                            }
-                        }
-                    }
-                }
-                div {
-                    Link {
-                        to: Route::Article { aid: props.aid },
-                        class: "block",
-                        // 原来的内容保持不变
-                        if let Some(str) = props.secret {
-                            div {
-                                class: "text-sm font-semibold text-red-500 mb-2",
-                                "🔒 私密文章"
-                            }
-                        }
-                        div {
-                            class: "text-gray-600 hover:text-blue-400 flex flex-row gap-2 items-center",
-                            "read more"
-                            right_icon{ size: 4 }
-                        }
-
-                    }
-                }
-            }
-        }
-    }
-}
-
 
 
 fn get_article_by_id(aid: &str) -> ArticleInfo {
