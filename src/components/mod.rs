@@ -1,7 +1,8 @@
 use dioxus::prelude::*;
 use lucide_dioxus::{ChevronRight, Folders, Tags};
+use reqwest::get;
 
-use crate::{models::ArticleInfo, routes::Route};
+use crate::{models::ArticleInfo, routes::Route, views::article::ApiResponse};
 
 
 #[component]
@@ -71,7 +72,7 @@ pub fn ArticleCard(props: ArticleCardProps) -> Element {
                 }
                 div {
                     Link {
-                        to: Route::Article { aid: props.aid },
+                        to: Route::Article { aid: props.aid, title: props.title, created_at: props.created_at, updated_at: props.updated_at, tags: props.tags, categories: props.categories },
                         class: "block",
                         // 原来的内容保持不变
                         if let Some(str) = props.secret {
@@ -94,12 +95,23 @@ pub fn ArticleCard(props: ArticleCardProps) -> Element {
 }
 
 #[component]
-pub fn ArticleMain(aid: String, content: String, title: String, created_at: String, updated_at: String, tag: Vec<String>, categories: Vec<String>) -> Element {
-    
+pub fn ArticleMain(aid: String, title: String, created_at: String, updated_at: String, tags: Vec<String>, categories: Vec<String>) -> Element {
+    let mut content = use_signal(|| String::new());
+    use_future(move || {
+    let value = aid.clone();
+    async move {
+        let a = get(format!("http://111.231.136.180:8000/api/v1/article/{}/content/path", value.clone())).await.unwrap()
+            .json::<ApiResponse::<String>>().await.unwrap().data;
+        content.set(
+            get(format!("http://111.231.136.180:8000{}", a) ).await.unwrap().text().await.unwrap()
+        )
+        }
+    }
+    );
     rsx! {
         div {
-            class: "flex flex-col items-center p-8 bg-white rounded-lg shadow-md w-3/4",
-            
+            class: "flex flex-col items-center p-8 bg-white rounded-lg shadow-md",
+            { content }
         }
     }
 }
