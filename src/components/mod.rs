@@ -2,7 +2,7 @@ use dioxus::prelude::*;
 use lucide_dioxus::{ChevronRight, Folders, Tags};
 use reqwest::get;
 
-use crate::{models::ArticleInfo, routes::Route, views::article::ApiResponse};
+use crate::{models::{ArticleInfo, ApiResponse}, routes::Route};
 
 
 #[component]
@@ -28,12 +28,12 @@ pub fn ArticleCard(props: ArticleCardProps) -> Element {
                 h1 {
                     id: "title",
                     class : "text-3xl font-bold",
-                    "{props.title}"
+                    "{props.title()}"
                 }
                 p {
                     id: "updated time",
                     class: "text-gray-400 text-sm",
-                    "{props.updated_at}"
+                    "{props.updated_at()}"
                 }
             }
             div {
@@ -41,7 +41,7 @@ pub fn ArticleCard(props: ArticleCardProps) -> Element {
                 class: "my-4",
                 p {
                     class: "text-gray-600",
-                    "{props.summary}"
+                    "{props.summary()}"
                 }
             }
             div { 
@@ -52,7 +52,7 @@ pub fn ArticleCard(props: ArticleCardProps) -> Element {
                     Folders { size: 24 }
                     div {
                         class: "flex flex-wrap gap-2",
-                        for category in props.categories.iter() {
+                        for category in props.categories().iter() {
                             span {
                                 class: "px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm",
                                 "{category}"
@@ -62,7 +62,7 @@ pub fn ArticleCard(props: ArticleCardProps) -> Element {
                     Tags { size: 24 }
                     div {
                         class: "flex flex-wrap gap-2",
-                        for tag in props.tags.iter() {
+                        for tag in props.tags().iter() {
                             span {
                                 class: "px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm",
                                 "{tag}"
@@ -72,10 +72,10 @@ pub fn ArticleCard(props: ArticleCardProps) -> Element {
                 }
                 div {
                     Link {
-                        to: Route::Article { aid: props.aid, title: props.title, created_at: props.created_at, updated_at: props.updated_at, tags: props.tags, categories: props.categories },
+                        to: Route::Article { aid: props.aid(), title: props.title(), created_at: props.created_at(), updated_at: props.updated_at(), tags: props.tags(), categories: props.categories() },
                         class: "block",
                         // 原来的内容保持不变
-                        if let Some(str) = props.secret {
+                        if let Some(str) = props.secret() {
                             div {
                                 class: "text-sm font-semibold text-red-500 mb-2",
                                 "🔒 私密文章"
@@ -101,7 +101,7 @@ pub fn ArticleMain(aid: String, title: String, created_at: String, updated_at: S
     let value = aid.clone();
     async move {
         let a = get(format!("http://111.231.136.180:8000/api/v1/article/{}/content/path", value.clone())).await.unwrap()
-            .json::<ApiResponse::<String>>().await.unwrap().data;
+            .json::<ApiResponse::<String>>().await.unwrap().data();
         content.set(
             get(format!("http://111.231.136.180:8000{}", a) ).await.unwrap().text().await.unwrap()
         )

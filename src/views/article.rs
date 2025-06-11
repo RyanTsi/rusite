@@ -4,27 +4,22 @@ use serde::Deserialize;
 
 use crate::{assets::{folders_icon, left_icon, right_icon}, components::ArticleMain, models::ArticleInfo, routes::Route};
 
-#[derive(Deserialize)]
-pub struct ApiResponse<T> {
-    code: u32,
-    message: String,
-    pub data: T,
-}
 
 
-fn get_article_by_id(aid: &str) -> ArticleInfo {
-    // 这里应该调用 API 获取真实数据
-    ArticleInfo {
-        aid: aid.to_string(),
-        title: format!("文章标题 {}", aid),
-        summary: "这是文章摘要".to_string(),
-        categories: vec!["Rust".to_string(), "Web 开发".to_string()],
-        tags: vec!["Dioxus".to_string(), "前端".to_string()],
-        secret: None,
-        created_at: "2025-01-01".to_string(),
-        updated_at: "2025-01-05".to_string(),
-    }
-}
+
+// fn get_article_by_id(aid: &str) -> ArticleInfo {
+//     // 这里应该调用 API 获取真实数据
+//     ArticleInfo {
+//         aid: aid.to_string(),
+//         title: format!("文章标题 {}", aid),
+//         summary: "这是文章摘要".to_string(),
+//         categories: vec!["Rust".to_string(), "Web 开发".to_string()],
+//         tags: vec!["Dioxus".to_string(), "前端".to_string()],
+//         secret: None,
+//         created_at: "2025-01-01".to_string(),
+//         updated_at: "2025-01-05".to_string(),
+//     }
+// }
 
 #[component]
 pub fn Article(aid: String, title: String, created_at: String, updated_at: String, tags: Vec<String>, categories: Vec<String>) -> Element {

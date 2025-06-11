@@ -1,5 +1,7 @@
 use dioxus::prelude::*;
 use lucide_dioxus::{Moon, Sun};
+use rusite_front_end::fetch::Fetch;
+use rusite_front_end::models::Article;
 use rusite_front_end::routes::Route;
 use rusite_front_end::assets::*;
 
@@ -8,8 +10,30 @@ fn main() {
     dioxus::launch(App);
 }
 
+struct AppState {
+    fetch: Fetch,
+    articles: Vec<Article>,
+}
+
+impl AppState {
+    pub fn new() -> Self {
+        let base_url = std::env::var("BASE_URL").unwrap_or_else(|_| "http://localhost:8000".to_string());
+        let fetch = Fetch::new(&base_url);
+        let articles = fetch.fetch_articles();
+        Self {
+            fetch: fetch,
+            articles: Vec::new(),
+        }
+    }
+}
+
 #[component]
 fn App() -> Element {
+    let articles = use_signal(|| Vec::<Article>::new());
+    
+    use_future(move || async move {
+
+    });
     let mut is_dark = use_signal(|| false);
     rsx! {
         document::Link { rel: "icon", href: FAVICON }

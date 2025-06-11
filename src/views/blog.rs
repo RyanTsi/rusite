@@ -3,9 +3,9 @@ use std::{cmp::{max, min}, collections::HashSet};
 use dioxus::{document::eval, prelude::*};
 use reqwest::get;
 
-use crate::{components::ArticleCard, models::ArticleInfo};
+use crate::{components::ArticleCard, models::{ApiResponse, ArticleInfo}};
 
-use super::article::ApiResponse;
+
 
 
 #[component]
@@ -35,10 +35,10 @@ pub fn Blog() -> Element {
     use_effect(move || {
         let filtered: Vec<ArticleInfo> = articlelist().iter()
         .filter(|info| {
-            selected_tags().is_empty() || info.tags.iter().any(|tag| selected_tags().contains(tag))
+            selected_tags().is_empty() || info.tags().iter().any(|tag| selected_tags().contains(tag))
         })
         .filter(|info| {
-            selected_categories().is_empty() || info.categories.iter().any(|category| selected_categories().contains(category))
+            selected_categories().is_empty() || info.categories().iter().any(|category| selected_categories().contains(category))
         })
         .cloned()
         .collect();
@@ -64,14 +64,14 @@ pub fn Blog() -> Element {
                         class: "flex flex-col gap-8 items-end mt-8 w-3/4",
                         for info in cur_articles() {
                             ArticleCard { 
-                                aid: info.aid,
-                                title: info.title,
-                                summary: info.summary,
-                                tags: info.tags,
-                                categories: info.categories,
-                                secret: info.secret,
-                                created_at: info.created_at,
-                                updated_at: info.updated_at,
+                                aid: info.aid(),
+                                title: info.title(),
+                                summary: info.summary(),
+                                tags: info.tags().to_vec(),
+                                categories: info.categories(),
+                                secret: info.secret(),
+                                created_at: info.created_at(),
+                                updated_at: info.updated_at(),
                             }
                         }
                     }
