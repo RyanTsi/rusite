@@ -51,5 +51,5 @@ pub async fn content_service(
     db:  &Database
 ) -> Result<String, Box<dyn Error>> {
     let file_path = ARTICLIE_SAVE_PATH.to_string() + &db.get_content_path(&req.aid).await?;
-    read_file(&file_path)
+    read_file(&file_path).await
 }
