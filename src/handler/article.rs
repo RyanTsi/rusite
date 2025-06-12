@@ -1,5 +1,6 @@
 use actix_web::{web, HttpResponse, Responder};
 use serde_json::json;
+use utoipa::openapi::content;
 
 use crate::dao::database::Database;
 use crate::models::params::AidParams;
@@ -138,6 +139,36 @@ pub async fn content_path(
             "code": 200,
             "message": "Success",
             "data": path,
+        })),
+        Err(e) => HttpResponse::InternalServerError().json(json!({
+            "code": 500,
+            "message": e.to_string(),
+        })),
+    }
+}
+
+
+#[utoipa::path(
+    get,
+    context_path = "/api/v1",
+    path = "/article/{aid}/content",
+    operation_id = "article content",
+    params(AidParams),
+    responses(
+        (status = 200, description = "Success"),
+    ),
+    tag = "article content",
+)]
+pub async fn content(
+    req: web::Path<AidParams>,
+    data: web::Data<Database>
+) -> impl Responder {
+    log::info!("->> {:<12}", "get content");
+    match content_service(&req, &data).await {
+        Ok(content) => HttpResponse::Ok().json(json!({
+            "code": 200,
+            "message": "Success",
+            "data": content,
         })),
         Err(e) => HttpResponse::InternalServerError().json(json!({
             "code": 500,

@@ -24,6 +24,7 @@ use actix_cors::Cors;
         crate::handler::article::delete,
         crate::handler::article::list,
         crate::handler::article::content_path,
+        crate::handler::article::content,
     ),
     components(schemas(
         crate::models::requests::UserCreateRequest,
@@ -50,6 +51,7 @@ fn config_app(cfg: &mut web::ServiceConfig) {
                     .service(web::resource("/{aid}/delete").route(web::delete().to(article::delete)))
                     .service(web::resource("/list").route(web::get().to(article::list)))
                     .service(web::resource("/{aid}/content/path").route(web::get().to(article::content_path)))
+                    .service(web::resource("/{aid}/content").route(web::get().to(article::content)))
                 )
         )
         .service(
