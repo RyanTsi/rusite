@@ -2,7 +2,7 @@ use std::error::Error;
 
 use actix_web::web;
 
-use crate::config::ARTICLIE_SAVE_PATH;
+use crate::config::{ARTICLIE_SAVE_PATH, CURRENT_PATH};
 use crate::models::params::AidParams;
 use crate::models::requests::{ArticleCreateRequest, ArticleModifyRequest};
 use crate::dao::database::Database;
@@ -50,6 +50,6 @@ pub async fn content_service(
     req: &web::Path<AidParams>,
     db:  &Database
 ) -> Result<String, Box<dyn Error>> {
-    let file_path = ARTICLIE_SAVE_PATH.to_string() + &db.get_content_path(&req.aid).await?;
+    let file_path = CURRENT_PATH.to_string() + &db.get_content_path(&req.aid).await?;
     read_file(&file_path).await
 }
