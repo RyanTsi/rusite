@@ -28,3 +28,16 @@ pub struct ArticleModifyRequest {
     pub content: Option<String>,
     pub secret: Option<String>,
 }
+
+#[derive(Deserialize, ToSchema)]
+pub struct CommentCreateRequest {
+    pub aid: String,
+    pub uid: String,
+    pub content: String,
+}
+
+#[derive(Deserialize, ToSchema)]
+pub struct CommentModifyRequest {
+    pub cid: String,
+    pub content: String,
+}

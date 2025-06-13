@@ -5,3 +5,8 @@ use utoipa::IntoParams;
 pub struct AidParams {
     pub aid: String,
 }
+
+#[derive(Deserialize, IntoParams)]
+pub struct CidParams {
+    pub cid: String,
+}

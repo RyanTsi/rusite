@@ -12,3 +12,12 @@ pub struct ArticleInfo {
     pub created_at: DateTime<Utc>,
     pub aid: String,
 }
+
+#[derive(Serialize)]
+pub struct Comment {
+    pub cid: String,
+    pub uid: String,
+    pub content: String,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
