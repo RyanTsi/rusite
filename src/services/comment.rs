@@ -2,7 +2,7 @@ use std::error::Error;
 
 use actix_web::web;
 
-use crate::models::params::CidParams;
+use crate::models::params::{AidParams, CidParams};
 use crate::models::requests::{CommentCreateRequest, CommentModifyRequest};
 use crate::dao::database::Database;
 use crate::models::struction::Comment;
@@ -32,8 +32,8 @@ pub async fn modify_service(
 }
 
 pub async fn list_service(
-    req: &web::Path<CidParams>,
+    req: &web::Path<AidParams>,
     db:  &Database
 ) -> Result<Vec<Comment>, Box<dyn Error>> {
-    db.list_comment(&req.cid).await
+    db.list_comment(&req.aid).await
 }
