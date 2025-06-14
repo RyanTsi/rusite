@@ -4,12 +4,12 @@ use crate::dao::database;
 impl database::Database {
     pub async fn user_exists(
         &self,
-        username: &str
+        uid: &str
     ) -> Result<bool, Box<dyn Error>> {
         let (count,):(i32,) = sqlx::query_as(
-            "SELECT COUNT(*) FROM users WHERE username = ?",
+            "SELECT COUNT(*) FROM users WHERE uid = ?",
         )
-        .bind(username)
+        .bind(uid)
         .fetch_one(&self.pool)
         .await?;
         Ok(count == 1)
