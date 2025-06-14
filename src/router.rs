@@ -64,7 +64,7 @@ fn config_app(cfg: &mut web::ServiceConfig) {
                     web::scope("/comment")
                     .service(web::resource("/create").route(web::post().to(comment::create)))
                     .service(web::resource("/{cid}/delete").route(web::delete().to(comment::delete)))
-                    .service(web::resource("/modify").route(web::post().to(comment::modify)))
+                    .service(web::resource("/modify").route(web::put().to(comment::modify)))
                 )
         )
         .service(
