@@ -39,6 +39,7 @@ pub async fn create(
     context_path = "/api/v1",
     path = "/comment/{cid}/delete",
     operation_id = "comment delete",
+    params(AidParams),
     responses(
         (status = 200, description = "Success"),
     ),
