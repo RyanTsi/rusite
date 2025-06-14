@@ -39,7 +39,7 @@ pub async fn create(
     context_path = "/api/v1",
     path = "/comment/{cid}/delete",
     operation_id = "comment delete",
-    params(AidParams),
+    params(CidParams),
     responses(
         (status = 200, description = "Success"),
     ),
@@ -50,7 +50,7 @@ pub async fn delete(
     data: web::Data<Database>,
 ) -> impl Responder{
     log::info!("->> {:<12}", "delete comment");
-    match delete_service(&req,&data).await {
+    match delete_service(&req, &data).await {
         Ok(_) => HttpResponse::Ok().json(json!({
             "code": 200,
             "message": "success",
