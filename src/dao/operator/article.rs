@@ -100,7 +100,7 @@ impl database::Database {
 
     pub async fn article_exists(
         &self,
-        aid: &String
+        aid: &str
     ) -> Result<bool, Box<dyn Error>> {
         let (count,):(i64,) = sqlx::query_as(
             "SELECT COUNT(*) FROM articles WHERE aid = ?",

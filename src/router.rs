@@ -5,7 +5,7 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use crate::dao::database;
 use crate::handler::ping::ping;
-use crate::handler::{user, article};
+use crate::handler::{article, comment, user};
 use crate::middleware::cors::CORS;
 use actix_cors::Cors;
 
@@ -25,11 +25,17 @@ use actix_cors::Cors;
         crate::handler::article::list,
         crate::handler::article::content_path,
         crate::handler::article::content,
+        crate::handler::comment::create,
+        crate::handler::comment::delete,
+        crate::handler::comment::modify,
+        crate::handler::comment::list,
     ),
     components(schemas(
         crate::models::requests::UserCreateRequest,
         crate::models::requests::ArticleCreateRequest,
         crate::models::requests::ArticleModifyRequest,
+        crate::models::requests::CommentCreateRequest,
+        crate::models::requests::CommentModifyRequest,
     )),
 )]
 struct ApiDoc;
@@ -52,6 +58,13 @@ fn config_app(cfg: &mut web::ServiceConfig) {
                     .service(web::resource("/list").route(web::get().to(article::list)))
                     .service(web::resource("/{aid}/content/path").route(web::get().to(article::content_path)))
                     .service(web::resource("/{aid}/content").route(web::get().to(article::content)))
+                    .service(web::resource("/{aid}/comment").route(web::get().to(comment::list)))
+                )
+                .service(
+                    web::scope("/comment")
+                    .service(web::resource("/create").route(web::post().to(comment::create)))
+                    .service(web::resource("/{cid}/delete").route(web::delete().to(comment::delete)))
+                    .service(web::resource("/modify").route(web::post().to(comment::modify)))
                 )
         )
         .service(

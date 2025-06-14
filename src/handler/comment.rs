@@ -92,6 +92,7 @@ pub async fn modify(
     get,
     context_path = "/api/v1",
     path = "/article/{aid}/comment",
+    params(AidParams),
     operation_id = "comment list",
     responses(
         (status = 200, description = "success"),

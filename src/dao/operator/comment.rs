@@ -4,14 +4,32 @@ use sqlx::Row;
 use crate::models::struction::Comment;
 
 impl database::Database {
+    pub async fn comment_exists(
+        &self,
+        cid: &str
+    ) -> Result<bool, Box<dyn Error>> {
+        let (count,):(i64,) = sqlx::query_as(
+            "SELECT COUNT(*) FROM comments WHERE cid = ?",
+        )
+        .bind(cid)
+        .fetch_one(&self.pool)
+        .await?;
+        Ok(count == 1)
+    }
     pub async fn create_comment(
         &self,
         uid: &str,
         aid: &str,
         content: &str
     ) -> Result<(), Box<dyn Error>> {
+        if !self.article_exists(aid).await? {
+            return Err("article not exists".into());
+        }
+        if !self.user_exists(uid).await? {
+            return Err("user not exists".into());
+        }
         sqlx::query(
-            "INSERT INTO comment (aid, uid, content) VALUES (?, ?, ?)",
+            "INSERT INTO comments (aid, uid, content) VALUES (?, ?, ?)",
         )
         .bind(aid)
         .bind(uid)
@@ -25,7 +43,7 @@ impl database::Database {
         cid: &str
     ) -> Result<(), Box<dyn Error>> {
         sqlx::query(
-            "DELETE FROM comment WHERE cid = ?",
+            "DELETE FROM comments WHERE cid = ?",
         )
         .bind(cid)
         .execute(&self.pool)
@@ -38,8 +56,11 @@ impl database::Database {
         cid: &str,
         content: &str
     ) -> Result<(), Box<dyn Error>> {
+        if !self.comment_exists(cid).await? {
+            return Err("comment not exists".into());
+        }
         sqlx::query(
-            "UPDATE comment SET content = ? WHERE cid = ?",
+            "UPDATE comments SET content = ? WHERE cid = ?",
         )
         .bind(content)
         .bind(cid)
@@ -53,7 +74,7 @@ impl database::Database {
     ) -> Result<Vec<Comment>, Box<dyn Error>> {
         let comment_list = sqlx::query(
             "
-            SELECT cid, uid, content, created_at, updated_at FROM comment WHERE aid = ?
+            SELECT cid, uid, content, created_at, updated_at FROM comments WHERE aid = ?
             "
         )
         .bind(aid)
