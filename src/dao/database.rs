@@ -10,9 +10,9 @@ pub struct Database {
 
 impl Database {
     pub async fn new() -> Self {
-        let url = env::var("DATABASE_URL").expect("DATABASE_URL is not defined");
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL is not defined");
         Self {
-            pool: MySqlPool::connect(&url).await.expect("Failed to connect to database"),
+            pool: MySqlPool::connect(&database_url).await.expect("Failed to connect to database"),
             articlies_save_path: env::var("ARTICLIES_SAVE_PATH").expect("ARTICLIES_SAVE_PATH is not defined")
         }
     }

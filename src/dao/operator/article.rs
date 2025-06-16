@@ -2,7 +2,7 @@ use std::{collections::HashMap, error::Error};
 use crate::dao::database;
 use crate::models::struction::ArticleInfo;
 use sqlx::Row;
-use crate::utils::{self, current_time, str_split_to_vec, write_file};
+use crate::utils::{self, current_time, str_split_to_vec, write_file, delete_file};
 
 impl database::Database {
 
@@ -50,6 +50,8 @@ impl database::Database {
         &self,
         aid: &str
     ) -> Result<(), Box<dyn Error>> {
+        let save_path = &self.articlies_save_path().join(&self.get_content_path(aid).await?.as_str());
+        delete_file(&save_path).await?;
         sqlx::query("DELETE FROM articles WHERE aid = ?")
         .bind(aid)
         .execute(&self.pool)
