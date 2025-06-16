@@ -2,7 +2,6 @@ use std::error::Error;
 
 use actix_web::web;
 
-use crate::config::{ARTICLIE_SAVE_PATH, CURRENT_PATH};
 use crate::models::params::AidParams;
 use crate::models::requests::{ArticleCreateRequest, ArticleModifyRequest};
 use crate::dao::database::Database;
@@ -21,7 +20,14 @@ pub async fn modify_service(
     req: &web::Json<ArticleModifyRequest>,
     db:  &Database
 ) -> Result<(), Box<dyn Error>> {
-    db.modify_article(&req.aid, &req.title, &req.tags, &req.categories, &req.summary, &req.content, &req.secret).await?;
+    db.modify_article(
+        &req.aid,
+        req.title.as_deref(),
+        req.tags.as_ref(),
+        req.categories.as_ref(),
+        req.summary.as_deref(),
+        req.content.as_deref(),
+        req.secret.as_deref()).await?;
     Ok(())
 }
 
@@ -50,6 +56,6 @@ pub async fn content_service(
     req: &web::Path<AidParams>,
     db:  &Database
 ) -> Result<String, Box<dyn Error>> {
-    let file_path = CURRENT_PATH.to_string() + &db.get_content_path(&req.aid).await?;
+    let file_path = db.articlies_save_path().join(&db.get_content_path(&req.aid).await?);
     read_file(&file_path).await
 }

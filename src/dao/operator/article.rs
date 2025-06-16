@@ -2,7 +2,6 @@ use std::{collections::HashMap, error::Error};
 use crate::dao::database;
 use crate::models::struction::ArticleInfo;
 use sqlx::Row;
-use crate::config::{ARTICLIE_PATH, ARTICLIE_SAVE_PATH};
 use crate::utils::{self, current_time, str_split_to_vec, write_file};
 
 impl database::Database {
@@ -19,8 +18,8 @@ impl database::Database {
         let tagsmap = self.create_tagsmap(tags).await?;
         let categoriesmap = self.create_categoriesmap(categories).await?;
         let current = current_time();
-        let save_path = ARTICLIE_SAVE_PATH.to_string() + "/" + &current + "_" + title + ".md";
-        let relative_path = ARTICLIE_PATH.to_string() + "/" + &current + "_" + title + ".md";
+        let file_name = format!("{}_{}.md", &current, &title);
+        let save_path = &self.articlies_save_path().join(&file_name);
         utils::write_file(&save_path, content).await?;
         sqlx::query(
             "
@@ -29,7 +28,7 @@ impl database::Database {
         )
         .bind(title)
         .bind(summary)
-        .bind(relative_path)
+        .bind(file_name)
         .bind(secret)
         .bind(&current)
         .bind(&current)
@@ -49,7 +48,7 @@ impl database::Database {
 
     pub async fn delete_article(
         &self,
-        aid: &String
+        aid: &str
     ) -> Result<(), Box<dyn Error>> {
         sqlx::query("DELETE FROM articles WHERE aid = ?")
         .bind(aid)
@@ -60,13 +59,13 @@ impl database::Database {
 
     pub async fn modify_article(
         &self,
-        aid: &String,
-        title: &Option<String>,
-        tags: &Option<Vec<String>>,
-        categories: &Option<Vec<String>>,
-        summary: &Option<String>,
-        content: &Option<String>,
-        secret: &Option<String>
+        aid: &str,
+        title: Option<&str>,
+        tags: Option<&Vec<String>>,
+        categories: Option<&Vec<String>>,
+        summary: Option<&str>,
+        content: Option<&str>,
+        secret: Option<&str>
     ) -> Result<(), Box<dyn Error>> {
         if let Some(tags) = tags {
             self.modify_article_tags(aid, tags).await?;
@@ -92,7 +91,7 @@ impl database::Database {
         .execute(&self.pool)
         .await?;
         if let Some(content) = content {
-            let save_path = ".".to_string() + &self.get_content_path(aid).await?;
+            let save_path = &self.articlies_save_path().join(&self.get_content_path(aid).await?.as_str());
             write_file(&save_path, content).await?;
         }
         Ok(())
@@ -327,7 +326,7 @@ impl database::Database {
 
     async fn del_article_tags(
         &self,
-        aid: &String
+        aid: &str
     ) -> Result<(), Box<dyn Error>> {
         sqlx::query(
             "DELETE FROM article_tags WHERE aid = ?",
@@ -340,7 +339,7 @@ impl database::Database {
 
     async fn del_article_categories(
         &self,
-        aid: &String
+        aid: &str
     ) -> Result<(), Box<dyn Error>> {
         sqlx::query(
             "DELETE FROM article_categories WHERE aid = ?",
@@ -353,7 +352,7 @@ impl database::Database {
 
     async fn create_article_tags(
         &self,
-        aid: &String,
+        aid: &str,
         tagsmap: &Vec<(i32, String)>
     ) -> Result<(), Box<dyn Error>> {
         for (tid, _) in tagsmap {
@@ -370,7 +369,7 @@ impl database::Database {
 
     async fn create_article_categories(
         &self,
-        aid: &String,
+        aid: &str,
         categoriesmap: &Vec<(i32, String)>
     ) -> Result<(), Box<dyn Error>> {
         for (cid, _) in categoriesmap {
@@ -387,7 +386,7 @@ impl database::Database {
 
     async fn modify_article_tags(
         &self,
-        aid: &String,
+        aid: &str,
         tags: &Vec<String>
     ) -> Result<(), Box<dyn Error>> {
         for tag in tags {
@@ -401,7 +400,7 @@ impl database::Database {
 
     async fn modify_article_categories(
         &self,
-        aid: &String,
+        aid: &str,
         categories: &Vec<String>
     ) -> Result<(), Box<dyn Error>> {
         for category in categories {

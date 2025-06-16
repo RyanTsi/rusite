@@ -1,15 +1,19 @@
 use std::error::Error;
+use std::path::Path;
+use tokio::{fs, io::{AsyncReadExt, AsyncWriteExt}};
 
-use tokio::{fs::File, io::{AsyncReadExt, AsyncWriteExt}};
-
-pub async fn write_file(file_name: &str, content: &str) -> Result<(), Box<dyn Error>> {
-    let mut file = File::create(file_name).await?;
+pub async fn write_file(file_path: &Path, content: &str) -> Result<(), Box<dyn Error>> {
+    let parent_dir = file_path.parent().ok_or("Invalid file path")?;
+    if !parent_dir.exists() {
+        fs::create_dir_all(parent_dir).await?;
+    }
+    let mut file = fs::File::create(file_path).await?;
     file.write_all(content.as_bytes()).await?;
     Ok(())
 }
 
-pub async fn read_file(file_name: &str) -> Result<String, Box<dyn Error>> {
-    let mut file = File::open(file_name).await?;
+pub async fn read_file(file_path: &Path) -> Result<String, Box<dyn Error>> {
+    let mut file = fs::File::open(file_path).await?;
     let mut content = String::new();
     file.read_to_string(&mut content).await?;
     Ok(content)

@@ -1,6 +1,5 @@
 use actix_web::{web, HttpResponse, Responder};
 use serde_json::json;
-use utoipa::openapi::content;
 
 use crate::dao::database::Database;
 use crate::models::params::AidParams;

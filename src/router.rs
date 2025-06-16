@@ -1,5 +1,4 @@
 use actix_files::Files;
-use actix_web::http::header;
 use actix_web::{web, App, HttpResponse, HttpServer};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
@@ -7,7 +6,6 @@ use crate::dao::database;
 use crate::handler::ping::ping;
 use crate::handler::{article, comment, user};
 use crate::middleware::cors::CORS;
-use actix_cors::Cors;
 
 #[derive(OpenApi)]
 #[openapi(
