@@ -20,7 +20,7 @@ impl<T> ApiResponse<T> {
 
 #[derive(Props, PartialEq, Clone, Deserialize)]
 pub struct ArticleInfo {
-    aid: String,
+    pub aid: String,
     title: String,
     summary: String,
     tags: Vec<String>,

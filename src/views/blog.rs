@@ -3,16 +3,23 @@ use std::{cmp::{max, min}, collections::HashSet};
 use dioxus::{document::eval, prelude::*};
 use reqwest::get;
 
-use crate::{components::ArticleCard, models::{ApiResponse, ArticleInfo}};
+use crate::{components::ArticleCard, models::{ApiResponse, ArticleInfo}, state::AppState};
 
 
 
 
 #[component]
 pub fn Blog() -> Element {
+    let state = use_context::<Signal<AppState>>();
+    
+    let temp = state.read();
+    let articles = temp.articles();
     let mut articlelist = use_signal(|| Vec::new());
+    for article in articles.iter() {
+        articlelist.write().push(article.info().clone());
+    }
     let mut max_page= use_signal(|| 1);
-    let mut loading = use_signal(|| true);
+    let mut loading = use_signal(|| false);
     let mut tags = Vec::new();
     let mut categories = Vec::new();
     let mut cur_page = use_signal(|| 1);
@@ -20,11 +27,11 @@ pub fn Blog() -> Element {
     let selected_tags: Signal<HashSet<String>> = use_signal(|| HashSet::new());
     let selected_categories: Signal<HashSet<String>> = use_signal(|| HashSet::new());
     
-    use_future(move || async move {
-        articlelist.set(get("http://111.231.136.180:8000/api/v1/article/list")
-        .await.unwrap().json::<ApiResponse::<Vec<ArticleInfo>>>().await.unwrap().data);
-        loading.set(false);
-    });
+    // use_future(move || async move {
+    //     articlelist.set(get("http://111.231.136.180:8000/api/v1/article/list")
+    //     .await.unwrap().json::<ApiResponse::<Vec<ArticleInfo>>>().await.unwrap().data());
+    //     loading.set(false);
+    // });
 
     // test data
     for i in 1..=10 { 
@@ -62,18 +69,19 @@ pub fn Blog() -> Element {
                     class: "flex flex-row",
                     div {
                         class: "flex flex-col gap-8 items-end mt-8 w-3/4",
-                        for info in cur_articles() {
-                            ArticleCard { 
-                                aid: info.aid(),
-                                title: info.title(),
-                                summary: info.summary(),
-                                tags: info.tags().to_vec(),
-                                categories: info.categories(),
-                                secret: info.secret(),
-                                created_at: info.created_at(),
-                                updated_at: info.updated_at(),
-                            }
+                        for info in articlelist() {
+                            // ArticleCard { 
+                                "{info.aid}",
+                            //     title: info.title(),
+                            //     summary: info.summary(),
+                            //     tags: info.tags().to_vec(),
+                            //     categories: info.categories().to_vec(),
+                            //     secret: info.secret(),
+                            //     created_at: info.created_at(),
+                            //     updated_at: info.updated_at(),
+                            // }
                         }
+                        "123",
                     }
                     div {
                         class: "w-1/4 sticky top-24 h-fit self-start",

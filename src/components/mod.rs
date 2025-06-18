@@ -71,23 +71,23 @@ pub fn ArticleCard(props: ArticleCardProps) -> Element {
                     }
                 }
                 div {
-                    Link {
-                        to: Route::Article { aid: props.aid(), title: props.title(), created_at: props.created_at(), updated_at: props.updated_at(), tags: props.tags(), categories: props.categories() },
-                        class: "block",
-                        // 原来的内容保持不变
-                        if let Some(str) = props.secret() {
-                            div {
-                                class: "text-sm font-semibold text-red-500 mb-2",
-                                "🔒 私密文章"
-                            }
-                        }
-                        div {
-                            class: "text-gray-600 hover:text-blue-400 flex flex-row items-center",
-                            "Read more"
-                            ChevronRight { size: 24 }
-                        }
+                    // Link {
+                    //     to: Route::Article { aid: props.aid(), title: props.title(), created_at: props.created_at(), updated_at: props.updated_at(), tags: props.tags(), categories: props.categories() },
+                    //     class: "block",
+                    //     // 原来的内容保持不变
+                    //     if let Some(str) = props.secret() {
+                    //         div {
+                    //             class: "text-sm font-semibold text-red-500 mb-2",
+                    //             "🔒 私密文章"
+                    //         }
+                    //     }
+                    //     div {
+                    //         class: "text-gray-600 hover:text-blue-400 flex flex-row items-center",
+                    //         "Read more"
+                    //         ChevronRight { size: 24 }
+                    //     }
 
-                    }
+                    // }
                 }
             }
         }

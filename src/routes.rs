@@ -14,8 +14,8 @@ pub enum Route {
     Home {},
     #[route("/blog")]
     Blog {},
-    #[route("/blog/article/:aid")]
-    Article { aid: String, title: String, created_at: String, updated_at: String, tags: Vec<String>, categories: Vec<String> },
+    // #[route("/blog/article/:aid")]
+    // Article { aid: String, title: String, created_at: String, updated_at: String, tags: Vec<String>, categories: Vec<String> },
     #[route("/about")]
     About {},
 }
