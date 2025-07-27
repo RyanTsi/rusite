@@ -5,7 +5,7 @@ use actix_web::web;
 use crate::models::params::AidParams;
 use crate::models::requests::{ArticleCreateRequest, ArticleModifyRequest};
 use crate::dao::database::Database;
-use crate::models::struction::ArticleInfo;
+use crate::models::struction::{ArticleInfo, Tag, Category};
 use crate::utils::read_file;
 
 pub async fn create_service(
@@ -58,4 +58,16 @@ pub async fn content_service(
 ) -> Result<String, Box<dyn Error>> {
     let file_path = db.articlies_save_path().join(&db.get_content_path(&req.aid).await?);
     read_file(&file_path).await
+}
+
+pub async fn tags_service(
+    db: &Database
+) -> Result<Vec<Tag>, Box<dyn Error>> {
+    db.get_tags().await
+}
+
+pub async fn categories_service(
+    db: &Database
+) -> Result<Vec<Category>, Box<dyn Error>> {
+    db.get_categories().await
 }

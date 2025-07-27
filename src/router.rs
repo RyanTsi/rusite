@@ -57,6 +57,8 @@ fn config_app(cfg: &mut web::ServiceConfig) {
                     .service(web::resource("/{aid}/content/path").route(web::get().to(article::content_path)))
                     .service(web::resource("/{aid}/content").route(web::get().to(article::content)))
                     .service(web::resource("/{aid}/comment").route(web::get().to(comment::list)))
+                    .service(web::resource("/tags").route(web::get().to(article::tags)))
+                    .service(web::resource("/categories").route(web::get().to(article::categories)))
                 )
                 .service(
                     web::scope("/comment")

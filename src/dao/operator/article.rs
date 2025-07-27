@@ -1,6 +1,6 @@
 use std::{collections::HashMap, error::Error};
 use crate::dao::database;
-use crate::models::struction::ArticleInfo;
+use crate::models::struction::{ArticleInfo, Tag, Category};
 use sqlx::Row;
 use crate::utils::{self, current_time, str_split_to_vec, write_file, delete_file};
 
@@ -296,34 +296,50 @@ impl database::Database {
 
     pub async fn get_tags_list(
         &self
-    ) -> Result<HashMap<String, i32>, Box<dyn Error>> {
+    ) -> Result<Vec<Tag>, Box<dyn Error>> {
         let tags = sqlx::query(
-            "SELECT * FROM tags"
+            "
+            SELECT t.name AS tag_name, COUNT(at.tid) AS count FROM tags t
+            JOIN article_tags at ON t.tid = at.tid
+            GROUP BY t.tid 
+            ORDER BY count DESC
+            "
         )
         .map(|row: sqlx::mysql::MySqlRow| {
-            let name = row.get::<String, _>("name");
-            let tid  = row.get::<i32, _>("tid");
-            (name, tid)
+            let name = row.get::<String, _>("tag_name");
+            let count  = row.get::<i32, _>("count");
+            Tag {
+                name,
+                count
+            }
         })
         .fetch_all(&self.pool)
         .await?;
-        Ok(tags.into_iter().collect())
+        Ok(tags)
     }
 
     pub async fn get_categories_list(
         &self
-    ) -> Result<HashMap<String, i32>, Box<dyn Error>> {
+    ) -> Result<Vec<Category>, Box<dyn Error>> {
         let categories = sqlx::query(
-            "SELECT * FROM categories"
+            "
+            SELECT c.name AS category_name, COUNT(ac.cid) AS count FROM categories c
+            JOIN article_categories ac ON c.cid = ac.cid
+            GROUP BY c.cid 
+            ORDER BY count DESC
+            "
         )
         .map(|row: sqlx::mysql::MySqlRow| {
-            let name = row.get::<String, _>("name");
-            let cid  = row.get::<i32, _>("cid");
-            (name, cid)
+            let name = row.get::<String, _>("category_name");
+            let count  = row.get::<i32, _>("cid");
+            Category {
+                name,
+                count
+            }
         })
         .fetch_all(&self.pool)
         .await?;
-        Ok(categories.into_iter().collect())
+        Ok(categories)
     }
 
     async fn del_article_tags(
@@ -413,4 +429,5 @@ impl database::Database {
         self.create_article_categories(aid, &categoriesmap).await?;
         Ok(())
     }
+
 }

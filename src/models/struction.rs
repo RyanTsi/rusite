@@ -21,3 +21,15 @@ pub struct Comment {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
+
+#[derive(Serialize)]
+pub struct Tag {
+    pub name: String,
+    pub count: usize,
+}
+
+#[derive(Serialize)]
+pub struct Category{
+    pub name: String,
+    pub count: usize,
+}
