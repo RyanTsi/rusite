@@ -307,7 +307,7 @@ impl database::Database {
         )
         .map(|row: sqlx::mysql::MySqlRow| {
             let name = row.get::<String, _>("tag_name");
-            let count  = row.get::<i32, _>("count");
+            let count  = row.get::<usize, _>("count");
             Tag {
                 name,
                 count
@@ -331,7 +331,7 @@ impl database::Database {
         )
         .map(|row: sqlx::mysql::MySqlRow| {
             let name = row.get::<String, _>("category_name");
-            let count  = row.get::<i32, _>("cid");
+            let count  = row.get::<usize, _>("count");
             Category {
                 name,
                 count
