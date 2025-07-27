@@ -310,7 +310,7 @@ impl database::Database {
             let count  = row.get::<i32, _>("count");
             Tag {
                 name,
-                count: count as usize,
+                count,
             }
         })
         .fetch_all(&self.pool)
@@ -334,7 +334,7 @@ impl database::Database {
             let count  = row.get::<i32, _>("count");
             Category {
                 name,
-                count: count as usize,
+                count,
             }
         })
         .fetch_all(&self.pool)

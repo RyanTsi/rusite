@@ -25,11 +25,11 @@ pub struct Comment {
 #[derive(Serialize)]
 pub struct Tag {
     pub name: String,
-    pub count: usize,
+    pub count: i32,
 }
 
 #[derive(Serialize)]
 pub struct Category{
     pub name: String,
-    pub count: usize,
+    pub count: i32,
 }
