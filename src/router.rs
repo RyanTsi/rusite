@@ -23,6 +23,8 @@ use crate::middleware::cors::CORS;
         crate::handler::article::list,
         crate::handler::article::content_path,
         crate::handler::article::content,
+        crate::handler::article::tags,
+        crate::handler::article::categories,
         crate::handler::comment::create,
         crate::handler::comment::delete,
         crate::handler::comment::modify,
