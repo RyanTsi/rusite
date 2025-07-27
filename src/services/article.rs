@@ -63,11 +63,11 @@ pub async fn content_service(
 pub async fn tags_service(
     db: &Database
 ) -> Result<Vec<Tag>, Box<dyn Error>> {
-    db.get_tags().await
+    db.get_tags_list().await
 }
 
 pub async fn categories_service(
     db: &Database
 ) -> Result<Vec<Category>, Box<dyn Error>> {
-    db.get_categories().await
+    db.get_categories_list().await
 }
