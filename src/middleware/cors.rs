@@ -1,13 +1,18 @@
 use actix_cors::Cors;
-use actix_web::http::header;
+use actix_web::http::{self, header};
 
 
 pub fn CORS() -> Cors {
     Cors::default()
-        .allow_any_origin()
-        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-        .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
-        .allowed_header(header::CONTENT_TYPE)
-        .supports_credentials()
-        .max_age(3600)
+    .allowed_origin("https://solarain.cloud")
+    .allowed_origin("https://www.solarain.cloud")
+    .allowed_origin("http://localhost:3000")
+    .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+    .allowed_headers(vec![
+        http::header::AUTHORIZATION,
+        http::header::ACCEPT,
+        http::header::CONTENT_TYPE,
+    ])
+    .supports_credentials()
+    .max_age(3600)
 }

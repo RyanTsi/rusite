@@ -83,7 +83,7 @@ pub async fn run_server() ->std::io::Result<()> {
             .app_data(share_data.clone())
             .configure(config_app)
     })
-    .bind(("0.0.0.0", 8000))?
+    .bind(("127.0.0.1", 8000))?
     .run()
     .await
 }
