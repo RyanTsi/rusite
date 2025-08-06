@@ -175,3 +175,57 @@ pub async fn content(
         })),
     }
 }
+
+#[utoipa::path(
+    get,
+    context_path = "/api/v1",
+    path = "/article/tags",
+    operation_id = "article tags",
+    responses(
+        (status = 200, description = "Success"),
+    ),
+    tag = "article tags",
+)]
+pub async fn tags(
+    data: web::Data<Database>
+) -> impl Responder {
+    log::info!("->> {:<12}", "article tags");
+    match tags_service(&data).await {
+        Ok(tags) => HttpResponse::Ok().json(json!({
+            "code": 200,
+            "message": "Success",
+            "data": tags,
+        })),
+        Err(e) => HttpResponse::InternalServerError().json(json!({
+            "code": 500,
+            "message": e.to_string(),
+        })),
+    }
+}
+
+#[utoipa::path(
+    get,
+    context_path = "/api/v1",
+    path = "/article/categories",
+    operation_id = "article categories",
+    responses(
+        (status = 200, description = "Success"),
+    ),
+    tag = "article categories",
+)]
+pub async fn categories(
+    data: web::Data<Database>
+) -> impl Responder {
+    log::info!("->> {:<12}", "article categories");
+    match categories_service(&data).await {
+        Ok(categories) => HttpResponse::Ok().json(json!({
+            "code": 200,
+            "message": "Success",
+            "data": categories,
+        })),
+        Err(e) => HttpResponse::InternalServerError().json(json!({
+            "code": 500,
+            "message": e.to_string(),
+        })),
+    }
+}

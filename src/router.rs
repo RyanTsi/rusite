@@ -23,6 +23,8 @@ use crate::middleware::cors::CORS;
         crate::handler::article::list,
         crate::handler::article::content_path,
         crate::handler::article::content,
+        crate::handler::article::tags,
+        crate::handler::article::categories,
         crate::handler::comment::create,
         crate::handler::comment::delete,
         crate::handler::comment::modify,
@@ -57,6 +59,8 @@ fn config_app(cfg: &mut web::ServiceConfig) {
                     .service(web::resource("/{aid}/content/path").route(web::get().to(article::content_path)))
                     .service(web::resource("/{aid}/content").route(web::get().to(article::content)))
                     .service(web::resource("/{aid}/comment").route(web::get().to(comment::list)))
+                    .service(web::resource("/tags").route(web::get().to(article::tags)))
+                    .service(web::resource("/categories").route(web::get().to(article::categories)))
                 )
                 .service(
                     web::scope("/comment")
